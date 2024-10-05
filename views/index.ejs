@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../F.png" type="image/png">
+    <title>Verdy</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        body{
+            background: linear-gradient(45deg, #ff8c8c, #6edfd7);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container{
+            width: 100%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .jam{
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-top: 10rem;
+        }
+        .jam-digital{
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            width: 100%;
+        }
+        .jam-digital:hover {
+            transform: scale(1.05);
+        }
+        .jam-digital h1{
+            color: #fff;
+            padding: 10px;
+            font-size: clamp(24px, 4vw, 36px);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+            text-align: center;
+        }
+        .jam-digital h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 50%;
+            height: 2px;
+            background-color: #fff;
+            transform: translateX(-50%);
+        }
+        .date-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        @media (max-width: 768px) {
+            .jam-digital {
+                flex-direction: column;
+            }
+            .date-container {
+                width: 100%;
+            }
+            #time {
+                width: 100%;
+                margin-top: 20px;
+            }
+        }
+        @media (max-width: 480px) {
+            .jam-digital {
+                padding: 15px;
+            }
+            .jam-digital h1 {
+                padding: 5px;
+                font-size: clamp(20px, 5vw, 28px);
+            }
+        }
+
+        .jam-digital {
+            position: relative;
+        }
+        .tooltip {
+            visibility: hidden;
+            width: 200px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555 transparent transparent transparent;
+        }
+        .jam-digital:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        /* Gaya untuk Chat Realtime */
+        .chatRealtime {
+            width: 100%;
+            max-width: 800px;
+            background: linear-gradient(45deg, #4ecdc4, #ff6b6b);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .chatRealtime:hover {
+            transform: translateY(-5px);
+        }
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 400px;
+        }
+        .chat-header {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            text-align: center;
+        }
+        .chat-header h1 {
+            color: #fff;
+            font-size: 24px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .chat-body {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .chat-message {
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            max-width: 80%;
+            align-self: flex-start;
+        }
+        .chat-message p {
+            color: #333;
+            font-size: 16px;
+        }
+        
+        /* Gaya untuk input chat */
+        .chat-input {
+            display: flex;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.1);
+            flex-direction: column;
+        }
+        .chat-input input {
+            flex-grow: 1;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            background-color: rgba(255, 255, 255, 0.8);
+            color: #333;
+            transition: all 0.3s ease;
+        }
+        .chat-input input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #4ecdc4;
+        }
+        .chat-input button {
+            margin-left: 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            background-color: #ff6b6b;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .chat-input button:hover {
+            background-color: #ff8c8c;
+            transform: scale(1.05);
+        }
+        
+        @media (max-width: 768px) {
+            .chatRealtime {
+                margin-top: 30px;
+            }
+            .chat-container {
+                height: 300px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .chat-header h1 {
+                font-size: 20px;
+            }
+            .chat-message p {
+                font-size: 14px;
+            }
+            .chat-input input,
+            .chat-input button {
+                font-size: 14px;
+            }
+        }
+        .container-chat{
+            margin-top: 20px;
+            height: 500px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="jam">
+            <div class="jam-digital">
+                <div class="tooltip">Sampai jumpa di 21 Oktober 2024</div>
+                <div class="date-container">
+                    <h1 id="months">00 bulan</h1>
+                    <h1 id="days">00 hari</h1>
+                </div>
+                <h1 id="time">00:00:00</h1>
+            </div>
+        </div>
+        <div class="container-chat">
+            <div class="chatRealtime">
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <h1>Chat Realtime</h1>
+                    </div>
+                    <div class="chat-body" id="chat-body">
+                        <% if (data && data.length > 0) { %>
+                            <% data.forEach(item => { %>
+                                <div class="chat-message">
+                                    <p><strong><%= item.nama %>:</strong> <%= item.pesan %></p>
+                                </div>
+                            <% }) %>
+                        <% } else { %>
+                            <div class="chat-message">
+                                <p><strong>Belum Ada Pesan....</strong></p>
+                            </div>
+                        <% } %>                        
+                    </div>
+                    <div class="chat-input">
+                        <div style="display: flex;">
+                            <input type="text" id="message-input" placeholder="Ketik pesan...">
+                            <button id="send-button">Kirim</button>
+                        </div>
+                        <input type="text" id="message-input-nama" style="margin-top: 20px; width: 70%;" placeholder="Nama Anda..">
+                    </div>
+                    <p style="color:red; padding:10px; display: none;" id="peringatan"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io(); // Inisialisasi socket.io
+
+        if(localStorage.getItem('userName')){
+            document.getElementById('message-input-nama').style.display = 'none'
+        }
+
+const sendButton = document.getElementById('send-button');
+const messageInput = document.getElementById('message-input');
+const messageInputNama = document.getElementById('message-input-nama');
+const chatBody = document.getElementById('chat-body');
+const peringatan = document.getElementById('peringatan');
+let savedName = localStorage.getItem('userName');
+
+// Jika nama sudah ada di localStorage, sembunyikan input nama
+if (savedName) {
+    messageInputNama.style.display = 'none';
+} else {
+    messageInputNama.style.display = 'block';
+}
+
+sendButton.addEventListener('click', () => {
+    const message = messageInput.value.trim();
+    let messageNama = messageInputNama.value.trim() || savedName;
+
+    if (message !== '' && messageNama !== '') {
+        // Simpan nama di localStorage jika belum ada
+        if (!savedName) {
+            localStorage.setItem('userName', messageNama);
+            savedName = messageNama; // Update variabel savedName
+            messageInputNama.style.display = 'none'; // Sembunyikan input nama setelah disimpan
+        }
+
+        // Emit pesan baru ke server
+        socket.emit('newMessage', { name: messageNama, message });
+        messageInput.value = ''; // Kosongkan input pesan
+        peringatan.style.display = 'none'; // Sembunyikan peringatan
+    } else {
+        peringatan.textContent = 'Isi yang lengkap dong, bro!';
+        peringatan.style.display = 'block'; // Tampilkan peringatan jika input belum lengkap
+    }
+});
+
+// Menerima pembaruan pesan dari server
+socket.on('updateData', function(data) {
+    const messageDiv = document.createElement('div');
+    messageDiv.classList.add('chat-message');
+    messageDiv.innerHTML = `<p><strong>${data.name}:</strong> ${data.message}</p>`;
+    chatBody.appendChild(messageDiv);
+    chatBody.scrollTop = chatBody.scrollHeight; // Scroll ke bawah setelah menerima pesan baru
+});
+
+// Countdown function
+function updateCountdown() {
+    const targetDate = new Date('2024-10-21T00:00:00').getTime();
+    const now = new Date().getTime();
+    const difference = targetDate - now;
+
+    const months = Math.floor(difference / (1000 * 60 * 60 * 24 * 30));
+    const days = Math.floor((difference % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+    document.getElementById('months').innerHTML = `${months} bulan`;
+    document.getElementById('days').innerHTML = `${days} hari`;
+    document.getElementById('time').innerHTML = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+}
+
+setInterval(updateCountdown, 1000);
+updateCountdown(); // Panggil fungsi sekali untuk menampilkan hitungan mundur segera
+
+    </script>
+   
+    
+</body>
+</html>
